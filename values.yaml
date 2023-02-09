@@ -1,0 +1,46 @@
+kube-prometheus-stack:
+  # Configure the Prometheus server
+  server:
+    # The URL to scrape for metrics
+    scrape_configs:
+      - job_name: prometheus
+        scrape_interval: 15s
+        scrape_timeout: 10s
+        metrics_path: /metrics
+        scheme: http
+        static_configs:
+          - targets:
+            - localhost:9090
+
+  # Configure the Alertmanager component
+  alertmanager:
+    enabled: true
+    config:
+      global:
+        resolve_timeout: 5m
+      route:
+        group_by: [ 'job', 'alertname', 'priority' ]
+        group_wait: 10s
+        group_interval: 1m
+        receiver: 'prometheus-msteams'
+        routes:
+          - match:
+              alertname: Watchdog
+            receiver: "null"
+      receivers:
+        - name: "null"
+        - name: 'prometheus-msteams'
+          webhook_configs:
+            - url: "http://prometheus-msteams:2000/team_connector"
+              send_resolved: true
+  # Enable the node_exporter component to collect metrics from the Kubernetes nodes
+  node_exporter:
+    enabled: true
+
+  # Enable the kube-state-metrics component to collect metrics about the state of the Kubernetes cluster
+  kube_state_metrics:
+    enabled: true
+
+  # Enable the cAdvisor component to collect metrics about the containers running in the cluster
+  cAdvisor:
+    enabled: true
