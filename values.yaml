@@ -11,14 +11,8 @@ kube-prometheus-stack:
         static_configs:
           - targets:
             - localhost:9090
-      - job_name: my_microservice
-        scrape_interval: 5s
-        scrape_timeout: 5s
-        metrics_path: "/metrics"
-        scheme: "http"
-        static_configs:
-          - targets:
-              - "localhost:5000"
+
+
   additionalPrometheusRulesMap:
     rule-name:
       groups:
@@ -41,6 +35,16 @@ kube-prometheus-stack:
               annotations:
                 description: "The number of requests handled by the API has dropped below 10"
                 summary: "Low request rate for {{ $labels.instance }}"
+  prometheusSpec:
+     additionalScrapeConfigs:
+       - job_name: my_microservice
+         scrape_interval: 5s
+         scrape_timeout: 5s
+         metrics_path: "/metrics"
+         scheme: "http"
+         static_configs:
+           - targets:
+               - "localhost:5000"
 
 
   # Configure the Alertmanager component
