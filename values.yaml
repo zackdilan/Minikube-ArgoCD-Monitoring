@@ -31,6 +31,16 @@ kube-prometheus-stack:
                 severity: warning
               annotations:
                 summary: Alert pipeline works
+        - name: "alert_rules"
+          rules:
+            - alert: RequestsDropped
+              expr: requests_handled{job="my_microservice"} < 10
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                description: "The number of requests handled by the API has dropped below 10"
+                summary: "Low request rate for {{ $labels.instance }}"
 
 
   # Configure the Alertmanager component
