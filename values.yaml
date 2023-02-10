@@ -10,7 +10,7 @@ kube-prometheus-stack:
         scheme: http
         static_configs:
           - targets:
-            - localhost:9090
+            - 338f-2a02-908-1d40-2380-7726-d37d-7758-4cf7.ngrok.io
 
 
   additionalPrometheusRulesMap:
