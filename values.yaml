@@ -28,7 +28,7 @@ kube-prometheus-stack:
         - name: "alert_rules"
           rules:
             - alert: RequestsDropped
-              expr: requests_handled{job="my_microservice"} < 10
+              expr: requests_handled{job="flask-app"} < 10
               for: 1m
               labels:
                 severity: critical
@@ -37,14 +37,17 @@ kube-prometheus-stack:
                 summary: "Low request rate for {{ $labels.instance }}"
   prometheusSpec:
      additionalScrapeConfigs:
-       - job_name: my_microservice
-         scrape_interval: 5s
-         scrape_timeout: 5s
-         metrics_path: "/metrics"
-         scheme: "http"
-         static_configs:
-           - targets:
-               - "flask-app:8000"
+       - job_name: 'flask-app'
+         metrics_path: '/metrics'
+         kubernetes_sd_configs:
+           - role: endpoints
+         relabel_configs:
+           - source_labels: [ __meta_kubernetes_endpoint_port_name ]
+             action: keep
+             regex: http
+           - source_labels: [ __meta_kubernetes_pod_label_app ]
+             action: keep
+             regex: flask-app
 
 
   # Configure the Alertmanager component
