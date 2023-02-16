@@ -37,17 +37,13 @@ kube-prometheus-stack:
                 summary: "Low request rate for {{ $labels.instance }}"
   prometheusSpec:
      additionalScrapeConfigs:
-       - job_name: 'flask-app'
-         metrics_path: '/metrics'
-         kubernetes_sd_configs:
-           - role: endpoints
-         relabel_configs:
-           - source_labels: [ __meta_kubernetes_endpoint_port_name ]
-             action: keep
-             regex: http
-           - source_labels: [ __meta_kubernetes_pod_label_app ]
-             action: keep
-             regex: flask-app
+       - job_name: flask-app
+         scrape_interval: 5s
+         scrape_timeout: 5s
+         metrics_path: "/metrics"
+         scheme: "http"
+         static_configs:
+           - targets: ['flask-app.default.svc.cluster.local:8000']
 
 
   # Configure the Alertmanager component
