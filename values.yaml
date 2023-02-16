@@ -43,7 +43,7 @@ kube-prometheus-stack:
          metrics_path: "/metrics"
          scheme: "http"
          static_configs:
-           - targets: ['flask-app.default.svc.cluster.local:8000']
+           - targets: ['flask-app.dev.svc.cluster.local:8000']
 
 
   # Configure the Alertmanager component
