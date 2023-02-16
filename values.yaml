@@ -44,7 +44,7 @@ kube-prometheus-stack:
          scheme: "http"
          static_configs:
            - targets:
-               - "3373-217-70-173-109.ngrok.io"
+               - "localhost:8000"
 
 
   # Configure the Alertmanager component
